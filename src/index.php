@@ -2,14 +2,16 @@
 include_once "lib/db.php";
 
 header('Content-Type: application/json');
-
 $response = [
+    'query' => $_GET,
+    'total' => 0,
     'results' => array(),
     'response' => ['status' => 'failed'],
 ];
 
+
 // get and prepare params
-$response['query'] = $_GET;
+//$response['query'] = $_GET;
 
 $params = [];
 if (isset($_GET['distributorName'])) $params[] = "distributorName LIKE %" . $_GET['distributorName'] . "%";
@@ -33,7 +35,9 @@ if ($tab) {
     if ($query_result = $db->query($sql)) {
         while ($item = $query_result->fetch_assoc()) {
             $response['results'][] = $item;
+
         }
+        $response['total'] = sizeof($response['results']);
         $response['response']['status'] = 'success';
     }
 }
