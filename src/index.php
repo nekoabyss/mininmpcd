@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 error_reporting(0);
 $response = [
     'query' => $_GET,
+    'name' => $tab_name,
     'total' => 0,
     'results' => array(),
     'response' => ['status' => 'failed'],
@@ -45,6 +46,7 @@ try {
                 $response['results'][] = $item;
 
             }
+            $response['name'] = $tab_name;
             $response['total'] = sizeof($response['results']);
             $response['response']['status'] = 'success';
         }
