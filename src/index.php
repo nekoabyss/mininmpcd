@@ -25,8 +25,14 @@ try {
     //$response['query'] = $_GET;
 
     $params = [];
-    if (isset($_GET['distributorName'])) $params[] = "distributor_name LIKE '%" . $db->escape_string($_GET['distributorName']) . "%'";
+    if (isset($_GET['distributorName'])) {
+        $params[] = "distributor_name LIKE '%" . $db->escape_string($_GET['distributorName']) . "%'";
+    }
     if (isset($_GET['distributorId'])) $params[] = "distributor_id = " . $db->escape_string($_GET['distributorId']);
+
+    if (!sizeof($params)) {
+        throw new RuntimeException('param not match');
+    }
 
     // prepare and execute query statement
     $sql = "SELECT tab_name FROM distributor";
@@ -36,18 +42,10 @@ try {
     //echo $sql;
 
     if ($tab = $db->query($sql)) {
-        $tab_name = $tab->fetch_assoc()['tab_name'];
+        $tab_name = $tab->fetch_assoc()['tab_name'] ;
 
         $sql = "SELECT * FROM $tab_name";
         $sql = $db->escape_string($sql);
-
-//        $sql2 = "SELECT distributor_id FROM distributor WHERE tab_name LIKE $tab_name";
-  //      $sql2 = $db->escape_string($sql2);
-    //    $sql2_result = $db->query($sql2);
-      //  $id = $sql2_result->fetch_assoc();
-
-
-        echo $sql2;
 
         if ($query_result = $db->query($sql)) {
             while ($item = $query_result->fetch_assoc()) {
