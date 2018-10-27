@@ -1,7 +1,7 @@
 <?php
 include_once "const.php";
-include_once "fuck1.php";
-include_once "fuck2.php";
+include_once "query.php";
+include_once "create.php";
 
 $db = new mysqli();
 
@@ -19,8 +19,7 @@ switch ($action) {
         $response = create($_GET);
         break;
     default:
-        echo 'fuck';
-        throw new Exception('fuck');
+        throw new Exception('');
 }
 
 echo json_encode($response, JSON_PRETTY_PRINT);
