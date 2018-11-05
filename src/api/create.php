@@ -38,12 +38,12 @@ function create ($_params) {
 
         if ($tab = $db->query($sql)) {
             if ($tab->num_rows) {
-                echo 'yayy unicornnn';
+                //echo 'yayy unicornnn';
                 $response['response']['status'] = 'table is already there';
             } else {
-                echo 'unicorn has died';
+                //echo 'unicorn has died';
                 $name = str_replace('table', '', $tab_name);
-                $id = strval(time());
+                $id = strval(time()); //random number
                 $sql =
                     "INSERT INTO distributor (distributor_id, distributor_name, tab_name)" .
                     "VALUES ('$id', '$name', '$tab_name');" .
@@ -65,6 +65,7 @@ function create ($_params) {
                     "  isActive boolean NOT NULL," .
                     "  primary key (item_code)" .
                     ")";
+                echo 'table created';
 
                 if ($db->multi_query($sql)) {
                     while ($db->more_results()) {

@@ -52,7 +52,6 @@ function query ($_params) {
 
                 }
                 $response['name'] = $tab_name;
-                //$response['id'] = $id;
                 $response['total'] = sizeof($response['results']);
                 $response['response']['status'] = 'success';
             } else {
@@ -74,3 +73,15 @@ function query ($_params) {
 
     return $response;
 }
+
+// ตารางกลาง for timestamp
+// timestamp
+// version
+// ftp / putty upload to server ; check
+// merge with kai's
+// first upload create table
+// else add to exist table
+// upload update middle table time stamp
+//------------------------------------------
+// api get version ; timestamp from middle table
+// create session ; login
