@@ -1,9 +1,7 @@
 <?php
-include_once "const.php";
+include_once "../lib/db.php";
 
 function create ($_params) {
-    $db = new mysqli();
-
     $response = [
         'query' => $_params,
         'name' => '',
@@ -12,25 +10,22 @@ function create ($_params) {
 
     // get query result, encode as json, and print
     try {
-        $db->connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
-        if ($db->connect_error) {
-            throw new Exception($db->connect_error);
-        }
+        $db = getDatabaseConnector();
 
         // get and prepare params
-        $params = [];
+        $query_params = [];
         if (isset($_params['register'])) {
-            $params[] = "tab_name = '" . $db->escape_string($_params['register']) . "'";
+            $query_params[] = "strTable = '" . $db->escape_string($_params['register']) . "'";
         }
 
-        if (!sizeof($params)) {
+        if (!sizeof($query_params)) {
             throw new RuntimeException('param not match');
         }
 
         // prepare and execute query statement
-        $sql = "SELECT tab_name FROM distributor";
-        if (sizeof($params) > 0) {
-            $sql .= " WHERE " . implode(" AND ", $params);
+        $sql = "SELECT strTable FROM tb_distributor";
+        if (sizeof($query_params) > 0) {
+            $sql .= " WHERE " . implode(" AND ", $query_params);
         }
         //echo $sql;
         $tab_name = $_params['register'];
@@ -45,7 +40,7 @@ function create ($_params) {
                 $name = str_replace('table', '', $tab_name);
                 $id = strval(time()); //random number
                 $sql =
-                    "INSERT INTO distributor (distributor_id, distributor_name, tab_name)" .
+                    "INSERT INTO tb_distributor (strDistributorId , strDistributorName, strTable)" .
                     "VALUES ('$id', '$name', '$tab_name');" .
                     "CREATE TABLE $tab_name (" .
                     "  item_code int(65) NOT NULL," .
@@ -85,7 +80,9 @@ function create ($_params) {
         $response['response']['error_message'] = $err->getMessage();
     } finally {
         // close db connection
-        $db->close();
+        if (isset($db)) {
+            $db->close();
+        }
     }
 
     return $response;

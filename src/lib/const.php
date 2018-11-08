@@ -1,14 +1,14 @@
 <?php
 
-switch ($_ENV['environment']) {
-    case 'production':
-        define("MYSQL_HOST", "");
-        define("MYSQL_PORT", "");
-        define("MYSQL_DATABASE", "");
-        define("MYSQL_USER", "");
-        define("MYSQL_PASSWORD", "");
+switch ($_SERVER['SERVER_ADDR']) {
+    case '172.26.4.93':
+        define("MYSQL_HOST", "127.0.0.1");
+        define("MYSQL_PORT", "3306");
+        define("MYSQL_DATABASE", "edi");
+        define("MYSQL_USER", "mahidol");
+        define("MYSQL_PASSWORD", "edi2018");
         break;
-    case 'dev':
+    case '172.18.0.2':
     default:
         define("MYSQL_HOST", "us-cdbr-iron-east-01.cleardb.net");
         define("MYSQL_PORT", "3306");
