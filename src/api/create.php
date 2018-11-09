@@ -38,10 +38,10 @@ function create ($_params) {
             } else {
                 //echo 'unicorn has died';
                 $name = str_replace('table', '', $tab_name);
-                $id = strval(time()); //random number
+                //$id = strval(time()); //random number
                 $sql =
-                    "INSERT INTO tb_distributor (strDistributorId , strDistributorName, strTable)" .
-                    "VALUES ('$id', '$name', '$tab_name');" .
+                    "INSERT INTO tb_distributor (strDistributorName, strTable)" .
+                    "VALUES ('$name', '$tab_name');" .
                     "CREATE TABLE $tab_name (" .
                     "  item_code int(65) NOT NULL," .
                     "  tpu_code int(65) NOT NULL," .

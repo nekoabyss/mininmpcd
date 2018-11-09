@@ -9,6 +9,7 @@ function query ($_params) {
         'total' => 0,
         'results' => array(),
         'response' => ['status' => 'failed'],
+        'timestamp' => '',
     ];
 
     // get query result, encode as json, and print
@@ -28,14 +29,16 @@ function query ($_params) {
         }
 
         // prepare and execute query statement
-        $sql = "SELECT strTable FROM tb_distributor";
+        $sql = "SELECT * FROM tb_distributor";
         if (sizeof($query_params) > 0) {
             $sql .= " WHERE " . implode(" AND ", $query_params);
         }
 
         if ($tab = $db->query($sql)) {
-            $tab_name = $tab->fetch_assoc()['strTable'];
-
+            $r = $tab->fetch_assoc();
+            $tab_name = $r['strTable'];
+            $response['name'] =  $r[''];
+            $response['timestamp'] = $r['strUpdateItemData'];
             $sql = "SELECT * FROM $tab_name";
             $sql = $db->escape_string($sql);
 
@@ -69,15 +72,3 @@ function query ($_params) {
 
     return $response;
 }
-
-// ตารางกลาง for timestamp
-// timestamp
-// version
-// ftp / putty upload to server ; check
-// merge with kai's
-// first upload create table
-// else add to exist table
-// upload update middle table time stamp
-//------------------------------------------
-// api get version ; timestamp from middle table
-// create session ; login
