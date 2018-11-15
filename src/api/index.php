@@ -3,6 +3,7 @@ include_once "../lib/db.php";
 include_once "query.php";
 include_once "create.php";
 include_once "delete.php";
+include_once "version.php";
 
 $db = new mysqli();
 
@@ -22,6 +23,9 @@ try {
             break;
         case 'delete':
             $response = delete($_GET);
+            break;
+        case 'version':
+            $response = version($_GET);
             break;
         default:
             throw new Exception('');
