@@ -4,6 +4,7 @@ include_once "query.php";
 include_once "create.php";
 include_once "delete.php";
 include_once "version.php";
+include_once "medicine.php";
 
 $db = new mysqli();
 
@@ -27,6 +28,8 @@ try {
         case 'version':
             $response = version($_GET);
             break;
+        case 'med':
+            $response = version($_GET);
         default:
             throw new Exception('');
     }

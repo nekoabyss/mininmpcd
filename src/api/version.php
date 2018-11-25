@@ -32,20 +32,22 @@ function version ($_params) {
         }
 
         if ($tab = $db->query($sql)) {
-            if ($tab = $db->query($sql)) {
                 $r = $tab->fetch_assoc();
                 $response['info'][] = $r;
                 $response['timestamp'] = $r['strUpdateItemData'];
-                $response['response']['status'] = 'success';
-            } else {
-                $error = $db->error;
-                if (strpos($error, "doesn't exist")) {
-                    throw new Exception('target table does not exist');
+                if ($r != NULL){
+                    $response['response']['status'] = 'success';
+
                 } else {
-                    throw new Exception($error);
+                    $response['response']['error_message'] = 'target does not exist';
                 }
-            }
         } else {
+            $error = $db->error;
+            if (strrpos($error, "doesn't exist")) {
+                throw new Exception('target does not exist');
+            } else {
+                throw new Exception($error);
+            }
             throw new Exception($db->error);
         }
     } catch (Exception $err) {
