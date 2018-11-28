@@ -17,7 +17,6 @@ function _initResponse($_params) {
     return [
         'query' => $_params,
         'name' => '',
-        //'id' => 0,
         'total' => 0,
         'results' => array(),
         'response' => ['status' => 'failed'],
@@ -124,7 +123,12 @@ function _queryByCode($_params) {
 
                 unset($response['name']);
                 $response['total'] = sizeof($response['results']);
-                $response['response']['status'] = 'success';
+                if (sizeof($response['results']) != NULL){
+                    $response['response']['status'] = 'success';
+
+                } else {
+                    $response['response']['error_message'] = "target not found";
+                }
             } else {
                 $error = $db->error;
                 if (strpos($error, "doesn't exist")) {
