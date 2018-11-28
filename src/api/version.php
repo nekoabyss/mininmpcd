@@ -6,7 +6,6 @@ function version ($_params) {
         'query' => $_params,
         'info' => array(),
         'response' => ['status' => 'failed'],
-        'timestamp' => '',
     ];
 
     // get query result, encode as json, and print
@@ -19,7 +18,7 @@ function version ($_params) {
             $query_params[] = "strDistributorName LIKE '%" . $db->escape_string($_params['distributorName']) . "%'";
         }
 
-        if (isset($_params['distributorId'])) $query_params[] = "strDistributorId = " . $db->escape_string($_params['distributorId']);
+        if (isset($_params['distributorId'])) $query_params[] = "strDistributorId LIKE '%" . $db->escape_string($_params['distributorId']) . "%'";
 
         if (!sizeof($query_params)) {
             throw new RuntimeException('param not match');
@@ -34,7 +33,6 @@ function version ($_params) {
         if ($tab = $db->query($sql)) {
                 $r = $tab->fetch_assoc();
                 $response['info'][] = $r;
-                $response['timestamp'] = $r['strUpdateItemData'];
                 if ($r != NULL){
                     $response['response']['status'] = 'success';
 
@@ -61,3 +59,8 @@ function version ($_params) {
 
     return $response;
 }
+
+// add query with id
+// update manual
+// tpu / gtin query
+
