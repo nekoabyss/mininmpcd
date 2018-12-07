@@ -20,12 +20,14 @@ function _initResponse($_params) {
         'total' => 0,
         'results' => array(),
         'response' => ['status' => 'failed'],
+        'distributor_info' => array(),
         'timestamp' => '',
     ];
 }
 
 function _queryByDistributor($_params) {
     $response = _initResponse($_params);
+    unset($response['distributor_info']);
 
     // get query result, encode as json, and print
     try {
@@ -53,6 +55,7 @@ function _queryByDistributor($_params) {
                 throw new Exception('distributor not found');
             }
 
+
             $tab_name = $r['strTable'];
             $response['name'] =  $r[''];
             $response['timestamp'] = $r['strUpdateItemData'];
@@ -63,7 +66,6 @@ function _queryByDistributor($_params) {
                 while ($item = $query_result->fetch_assoc()) {
                     $response['results'][] = $item;
                 }
-
                 $response['name'] = $tab_name;
                 $response['total'] = sizeof($response['results']);
                 $response['response']['status'] = 'success';
@@ -92,6 +94,8 @@ function _queryByDistributor($_params) {
 
 function _queryByCode($_params) {
     $response = _initResponse($_params);
+    unset($response['name']);
+    unset($response['timestamp']);
 
     // get query result, encode as json, and print
     try {
@@ -100,9 +104,8 @@ function _queryByCode($_params) {
         $sql = "SELECT * FROM tb_distributor";
 
         if ($tab = $db->query($sql)) {
-            $tables = array();
-
-            while ($item = $tab->fetch_assoc()) $tables[] = $item['strTable'];
+            $distributors = array();
+            while ($item = $tab->fetch_assoc()) $distributors[] = $item;
 
             // prepare and execute query statement
             $query_params = [];
@@ -113,7 +116,12 @@ function _queryByCode($_params) {
                 $query_params[] = "gtin = " . $db->escape_string($_params['gtin']);
             }
             $param = implode(" OR ", $query_params);
-            $tables = array_map(function ($table) use ($param) { return "SELECT '$table' AS distributor, $table.* FROM $table WHERE $param"; }, $tables);
+            $tables = array_map(
+                function ($table) use ($param) {
+                    return "SELECT '" . $table['strTable'] . "' AS distributor, " . $table['strTable'] . ".* FROM " . $table['strTable'] . " WHERE $param";
+                },
+                $distributors
+            );
             $sql = "SELECT * FROM (" . implode(" UNION ", $tables) . ") t ORDER BY t.item_code";
 
             if ($query_result = $db->query($sql)) {
@@ -121,11 +129,25 @@ function _queryByCode($_params) {
                     $response['results'][] = $item;
                 }
 
-                unset($response['name']);
                 $response['total'] = sizeof($response['results']);
-                if (sizeof($response['results']) != NULL){
-                    $response['response']['status'] = 'success';
 
+                $response['distributor_info'] = array_reduce(
+                    $response['results'],
+                    function ($col, $cur) {
+                        if (!in_array($cur['distributor'], $col)) {
+                            $col[] = $cur['distributor'];
+                        }
+                        return $col;
+                    },
+                    array()
+                );
+                $response['distributor_info'] = array_map(
+                    function ($distributor_name) use ($distributors) { return $distributors[array_search($distributor_name, $distributors)]; },
+                    $response['distributor_info']
+                );
+
+                if (sizeof($response['results'])) {
+                    $response['response']['status'] = 'success';
                 } else {
                     $response['response']['error_message'] = "target not found";
                 }
