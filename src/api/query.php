@@ -141,8 +141,10 @@ function _queryByCode($_params) {
                     },
                     array()
                 );
+
+                $distributor_names = array_map(function ($distributor) { return $distributor['strTable']; }, $distributors);
                 $response['distributor_info'] = array_map(
-                    function ($distributor_name) use ($distributors) { return $distributors[array_search($distributor_name, $distributors)]; },
+                    function ($distributor_name) use ($distributors, $distributor_names) { return $distributors[array_search($distributor_name, $distributor_names)]; },
                     $response['distributor_info']
                 );
 
